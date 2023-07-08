@@ -1,0 +1,45 @@
+<%- include('partials/head') %>
+<body>
+  <!-- NAVBAR -->
+  <div class="primary-nav">
+    <button href="#" class="hamburger open-panel nav-toggle">
+      <span class="screen-reader-text">Menu</span>
+    </button>
+    <nav role="navigation" class="menu">
+      <a href="#" class="logotype">Admin</a>
+      <div class="overflow-container">
+        <ul class="menu-dropdown">
+          <li><a href="/admin/dashboard">Dashboard</a><span class="icon"><i class="fas fa-table"></i></span></li>
+          <li><a href="/add-manager">Add Manager</a><span class="icon"><i class="fas fa-user-plus"></i></span></li>
+          <li><a href="/admin/logout">Log Out</a><span class="icon"><i class="fas fa-arrow-right-from-bracket"></i></i></span></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="new-wrapper">
+    <div id="main">
+      <div id="main-contents">
+        <div class="card1 text-white mb-3" style="max-width: 18rem;">
+          <div class="card-header">Header</div>
+          <div class="card-body">
+            <h5 class="card-title">Employees</h5>
+            <p class="card-text"><%= managers.length %> Staffs</p> <!-- Display the total number of managers -->
+          </div>
+        </div>
+        <div class="card2 text-white mb-3" style="max-width: 18rem;">
+          <div class="card-header">Header</div>
+          <div class="card-body">
+            <h5 class="card-title">Transaction</h5>
+            <p class="card-text"><%= transactions %> Total Transactions</p> <!-- Display the total number of pets created -->
+          </div>
+        </div>
+      </div>
+      <!-- Chart -->
+      <figure class="highcharts-figure">
+        <div id="container"></div>
+        <div id="container2"></div>
+      </figure>
+    </div>
+  </div>
+  <%- include('partials/adminscriptchart') %>

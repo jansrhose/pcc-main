@@ -1,0 +1,76 @@
+<!-- Chart 
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script>
+  // Chart 1: Total Transactions Created by Manager
+  Highcharts.chart('container', {
+    chart: {
+      type: 'bar'
+    },
+    title: {
+      text: 'Total Transactions Created by Manager'
+    },
+    xAxis: {
+      categories: [
+        <% managerstrans.forEach(manager => { %>
+          '<%= manager.firstName %> <%= manager.lastName %>', 
+        <% }) %>
+      ]
+    },
+    yAxis: {
+      title: {
+        text: 'Number of Pets'
+      }
+    },
+    series: [{
+      name: 'Pets Created',
+      data: [
+        <% managerstrans.forEach(manager => { %>
+          <%= manager.pets.length %>,
+        <% }) %>
+      ]
+    }]
+  });
+</script>
+  
+<script>
+  // Chart 2: Total Pets Created by Manager
+  Highcharts.chart('container2', {
+    chart: {
+      type: 'bar'
+    },
+    title: {
+      text: 'Total Pets Created by Manager'
+    },
+    xAxis: {
+      categories: [
+        <% managerstrans.forEach(manager => { %>
+          '<%= manager.firstName %> <%= manager.lastName %>', 
+        <% }) %>
+      ]
+    },
+    yAxis: {
+      title: {
+        text: 'Number of Pets'
+      }
+    },
+    series: [{
+      name: 'Pets Created',
+      data: [
+        <% managerstrans.forEach(manager => { %>
+          <%= manager.pets.length %>,
+        <% }) %>
+      ]
+    }]
+  });
+</script>-->
+
+<!-- OTHER VERSION OF FONT AWESOME -->
+<!--<script src="https://kit.fontawesome.com/4c56e4603b.js" crossorigin="anonymous"></script>-->
+<!-- BOOTSTRAP JS -->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script> 
+</body>
+</html>-->

@@ -1,0 +1,41 @@
+<%- include('partials/style') %>
+<body>
+  <div class="primary-nav">
+    <button href="#" class="hamburger open-panel nav-toggle">
+      <span class="screen-reader-text">Menu</span>
+    </button>
+    <nav role="navigation" class="menu">
+      <a href="#" class="logotype">Staff</a>
+      <div class="overflow-container">
+        <ul class="menu-dropdown">
+          <li><a href="/admin/dashboard">Dashboard</a><span class="icon"><i class="fas fa-table"></i></span></li>
+          <li><a href="/add-pet">Add Customer</a><span class="icon"><i class="fas fa-user-plus"></i></span></li>
+          <li><a href="/manager/logout">Log Out</a><span class="icon"><i class="fas fa-arrow-right-from-bracket"></i></i></span></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="new-wrapper">
+    <div id="main">
+      <div id="main-contents">
+        <div class="card1 text-white mb-3" style="max-width: 18rem;">
+          <div class="card-header">Header</div>
+          <div class="card-body">
+            <h5 class="card-title">No. Of Customers</h5>
+            <p class="card-text"><!--link of db--></p> <!-- You can add a dynamic value here from the database -->
+          </div>
+        </div>
+        <div class="card2 text-white mb-3" style="max-width: 18rem;">
+          <div class="card-header">Header</div>
+          <div class="card-body">
+            <h5 class="card-title">Sales</h5>
+            <p class="card-text"><!--link of db--></p> <!-- You can add a dynamic value here from the database -->
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login Form</title>
+    
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-ho3jXzkOLyiS/b/Hz+07JZkR1WBGhmC4fA+IJS4vAS3cM3egXxSxvwH+yb+K5Y5A5JZO83Tk+Ia5U5g6Uf/MJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* Global Styles */
+        * {
+            font-family: "Bruno Ace", cursive;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fceade;
+        }
+        
+        /* Navigation Styles */
+        nav {
+            background-color: #f4b285;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        
+        nav ul li {
+            margin-right: 20px;
+        }
+        
+        nav ul li a {
+            color: #000000;
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s, opacity 0.3s;
+        }
+        
+        nav ul li a:before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #000000;
+            bottom: -5px;
+            left: 0;
+            visibility: hidden;
+            transform: scaleX(0);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        nav ul li a:hover {
+            color: #000000;
+            opacity: 0.8;
+            margin-right: 2px;
+        }
+        
+        nav ul li a:hover:before {
+            visibility: visible;
+            transform: scaleX(1);
+        }
+        
+        /* Form Styles */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+        
+        .form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 3em;
+            border: 2px dashed #DAA06D;
+            border-radius: 15px;
+            background-color: #EADDCA;
+            box-shadow: 0 0 0 4px #EADDCA, 2px 2px 4px 2px rgba(0, 0, 0, 0.5);
+            transition: .4s ease-in-out;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .form .heading {
+            padding-left: 0.8em;
+            color: #DAA06D;
+            background-color: transparent;
+            letter-spacing: .5em;
+            text-align: center;
+            text-shadow: inset -1px -1px 1px #DAA06D; 
+            font-size: 30px;
+        }
+        
+        .form .input {
+            outline: none;
+            display: flex;
+            padding: 10px;
+            border: 1px solid #DAA06D;
+            color: #DAA06D;
+            width: 500px;
+            height: 3em;
+            border-radius: 10px;
+            background-color: #EADDCA;
+            text-align: center;
+        }
+        
+        .form .btn {
+            align-self: center;
+            margin-top: 2em;
+            border-radius: 10px;
+            outline: none;
+            border: none;
+            color: white;
+            background-color: #E5AA70;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            transition: .4s ease-in-out opacity, .1s ease-in-out active;
+            padding: 1em;
+            box-shadow: 0.5px 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .form .btn:hover {
+            opacity: 0.8;
+        }
+        
+        .form .btn:active {
+            transform: translateX(0.1em) translateY(0.1em);
+            box-shadow: none;
+        }
+        
+        .form .input:hover {
+            opacity: 0.8;
+            background-color: white;
+            transform: translateX(0.1em) translateY(0.1em);
+            box-shadow: none;
+        }
+        
+        ::placeholder {
+            color: #DAA06D;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="/">Home <i class="fas fa-home"></i></a></li>
+            <li><a href="/login">Login <i class="fa-solid fa-right-to-bracket"></i></a></li>
+        </ul>
+    </nav>
+
+    <!-- Form Section -->
+    <div class="container">
+        <form class="form" action="/login" method="post">
+            <!-- Form Heading -->
+            <p class="heading">LOGIN</p>
+
+            <!-- Error Message -->
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= error %>
+            </div>
+            <% } %>
+
+            <!-- Success Message -->
+            <% if (typeof success !== 'undefined' && success) { %>
+            <div class="alert alert-success" role="alert">
+                <%= success %>
+            </div>
+            <% } %>
+
+            <!-- Email Input -->
+            <input placeholder="Email" class="input" type="email" name="email" required>
+
+            <!-- Password Input -->
+            <input placeholder="Password" class="input" type="password" name="password" required>
+
+            <!-- Submit Button -->
+            <button class="btn" title="Sign In" type="submit">Submit</button>
+        </form>
+    </div>
+    
+    <!-- Font Awesome Script -->
+    <script src="https://kit.fontawesome.com/4c56e4603b.js" crossorigin="anonymous"></script>
+</body>
+</html>
