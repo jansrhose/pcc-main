@@ -34,8 +34,13 @@ function validateSession(req, res, next) {
   }
 }
 
+
+
+
+
+
 /* GET admin dashboard */
-router.get('/admin/dashboard', validateSession, async function(req, res, next) {
+router.get('/admin/dashboard', async function(req, res, next) {
   try {
     const managers = await prisma.manager.findMany();
     const transactions = await prisma.pet.count(); // Count the total number of pets
@@ -46,12 +51,173 @@ router.get('/admin/dashboard', validateSession, async function(req, res, next) {
     });
     const transactionsman = managerstrans.reduce((total, manager) => total + manager.pets.length, 0);
 
-    res.render('admin/dashboard', { title: 'Express', managers, transactions, transactionsman, managerstrans });
+    
+    
+    const servicesPerBreed = await prisma.pet.groupBy({
+      by: ['breed'],
+      _count: {
+        service: true
+      }
+    });  
+
+
+    const averageAgePerBreed = await prisma.pet.groupBy({
+      by: ['breed'],
+      _avg: {
+        age: true
+      }
+    });
+    // Sort averageAgePerBreed array in descending order based on average age
+    averageAgePerBreed.sort((a, b) => b._avg.age - a._avg.age);
+
+
+    const maleCount = await prisma.pet.count({
+      where: {
+        gender: 'male'
+      }
+    });
+
+    const femaleCount = await prisma.pet.count({
+      where: {
+        gender: 'female'
+      }
+    });
+
+  
+    const pets = await prisma.pet.findMany();
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+    
+    const months = monthNames.slice(); // Create a copy of monthNames array
+    const petsByMonth = {};
+    pets.forEach(pet => {
+      const monthName = getMonthName(pet.createdAt.getMonth()); // Extract the month name
+      petsByMonth[monthName] = (petsByMonth[monthName] || 0) + 1; // Increment the count for the month
+    });
+    
+    // Prepare the data for the line chart
+    const totalPetsByMonth = months.map(month => petsByMonth[month] || 0); // Assign a count of 0 for months without data
+
+
+  
+    const weightDistributionByBreed = await prisma.pet.groupBy({
+      by: ['breed'],
+      _min: {
+        weight: true
+      },
+      _max: {
+        weight: true
+      },
+      _avg: {
+        weight: true
+      }
+    });
+
+    // Convert weight values to floats
+    weightDistributionByBreed.forEach(data => {
+      data._min.weight = parseFloat(data._min.weight);
+      data._max.weight = parseFloat(data._max.weight);
+      data._avg.weight = parseFloat(data._avg.weight);
+    });
+    
+    // Sort the data by breed in ascending order
+    weightDistributionByBreed.sort((a, b) => a.breed.localeCompare(b.breed));
+
+    const petWeights = await prisma.pet.findMany({
+      select: {
+        weight: true
+      }
+    });
+
+    
+
+    const breeds = await prisma.pet.groupBy({
+      by: ['breed'],
+      orderBy: {
+        breed: 'asc'
+      }
+    });
+
+    const petss = await prisma.pet.findMany({
+      orderBy: {
+        createdAt: 'asc'
+      }
+    });
+  
+     
+    const servicesDistribution = await prisma.pet.groupBy({
+      by: ['service'],
+      _count: {
+        service: true
+      }
+    });
+
+    
+    const maleServices = await prisma.pet.findMany({
+      where: {
+        gender: 'male'
+      },
+      distinct: ['service']
+    });
+
+    const femaleServices = await prisma.pet.findMany({
+      where: {
+        gender: 'female'
+      },
+      distinct: ['service']
+    });
+
+    const chartData = [
+      {
+        from: 'Male',
+        to: maleServices.map(service => service.service)
+      },
+      {
+        from: 'Female',
+        to: femaleServices.map(service => service.service)
+      }
+    ];
+
+      
+    
+    res.render('admin/dashboard', { 
+      title: 'Express',
+      managers, 
+      transactions, 
+      transactionsman, 
+      managerstrans, 
+      servicesPerBreed, 
+      maleCount, 
+      femaleCount, 
+      averageAgePerBreed,
+      months,
+      totalPetsByMonth,
+      weightDistributionByBreed,
+      petWeights,
+      breeds,
+      petss, 
+      servicesDistribution,
+      chartData // Pass the servicesByGender data to the template
+     });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
 });
+
+
 
 router.get('/add-manager', validateSession, async function(req, res, next) { 
   try {
@@ -178,5 +344,31 @@ router.get('/admin/pets', validateSession, async function(req, res, next) {
     res.status(500).send('Internal Server Error');
   }
 });
+
+
+
+
+
+
+
+// Helper function to get the month name from the month index (0-11)
+function getMonthName(monthIndex) {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+  return monthNames[monthIndex];
+}
+
 
 module.exports = router;

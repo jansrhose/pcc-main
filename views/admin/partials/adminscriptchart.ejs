@@ -1,9 +1,10 @@
 <!-- Chart -->
 <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/sankey.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script> 
+<script src="https://code.highcharts.com/modules/networkgraph.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-
 
 <script>
   Highcharts.chart('container', {
@@ -22,22 +23,112 @@
       }
     },
     series: [{
-      name: 'Pets Created',
+      name: 'Transaction Created',
       data: [<% managerstrans.forEach(manager => { %><%= manager.pets.length %>, <% }) %>]
     }]
   });
-</script>
-  
+</script> 
+
 <script>
-  Highcharts.chart('container2', {
+   Highcharts.chart('container2', {
     chart: {
       type: 'bar'
     },
     title: {
-      text: 'Total Pets Created by Manager'
+      text: 'Services Availed Per Breed'
     },
     xAxis: {
-      categories: [<% managerstrans.forEach(manager => { %>'<%= manager.firstName %> <%= manager.lastName %>', <% }) %>]
+      categories: [<% servicesPerBreed.forEach(service => { %>'<%= service.breed %>', <% }) %>]
+    },
+    yAxis: {
+      title: {
+        text: 'Number of Services'
+      }
+    },
+    series: [{
+      name: 'Services',
+      data: [<% servicesPerBreed.forEach(service => { %><%= service._count.service %>, <% }) %>]
+    }]
+  });
+</script>
+
+<script>
+  Highcharts.chart('container3', {
+    chart: {
+      type: 'pie'
+    },
+    title: {
+      text: 'Gender Distribution of Pets'
+    },
+    series: [{
+      name: 'Gender',
+      colorByPoint: true,
+      data: [{
+        name: 'Male',
+        y: <%= maleCount %>
+      }, {
+        name: 'Female',
+        y: <%= femaleCount %>
+      }]
+    }]
+  });
+
+</script>
+
+<script>
+  Highcharts.chart('container4', {
+    chart: {
+      type: 'column'
+    },
+    title: {
+      text: 'Average Age of Pets per Breed'
+    },
+    xAxis: {
+      categories: [<% averageAgePerBreed.forEach(ageData => { %>'<%= ageData.breed %>', <% }) %>]
+    },
+    yAxis: {
+      title: {
+        text: 'Average Age'
+      }
+    },
+    legend: {
+      enabled: false
+    },
+    plotOptions: {
+      column: {
+        colorByPoint: true,
+        colors: ['#7cb5ec', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1', '#3f51b5']
+      }
+    },
+    series: [{
+      name: 'Average Age',
+      data: [
+        <% averageAgePerBreed.forEach(ageData => { %>
+          {
+            y: <%= ageData._avg.age %>,
+            color: '#7cb5ec',
+            dataLabels: {
+              enabled: true,
+              format: '{y}'
+            }
+          },
+        <% }) %>
+      ]
+    }]
+  });
+</script> 
+
+
+<script>
+  Highcharts.chart('container5', {
+    chart: {
+      type: 'line'
+    },
+    title: {
+      text: 'Total Pets Created by Month'
+    },
+    xAxis: {
+      categories: [<% months.forEach(month => { %>'<%= month %>', <% }) %>]
     },
     yAxis: {
       title: {
@@ -45,12 +136,233 @@
       }
     },
     series: [{
-      name: 'Pets Created',
-      data: [<% managerstrans.forEach(manager => { %><%= manager.pets.length %>, <% }) %>]
+      name: 'Total Pets',
+      data: [<% totalPetsByMonth.forEach(count => { %><%= count %>, <% }) %>]
     }]
   });
 </script>
-  <!-- OTHER VERSION OF FONT AWESOME -->
+
+<script>
+  const dataSeries = [<% weightDistributionByBreed.forEach(data => { %>
+    {
+      name: '<%= data.breed %>',
+      data: [[<%= data._avg.weight %>, <%= data._min.weight %>, <%= data._max.weight %>, <%= data._min.weight %>, <%= data._max.weight %>]],
+      tooltip: {
+        pointFormat: 'Min: {point.low}<br>Max: {point.high}<br>Avg: {point.y}'
+      }
+    },
+  <% }) %>];
+
+  Highcharts.chart('container6', {
+    chart: {
+      type: 'column'
+    },
+    title: {
+      text: 'Weight Distribution by Breed'
+    },
+    xAxis: {
+      categories: [<% weightDistributionByBreed.forEach(data => { %>'<%= data.breed %>', <% }) %>]
+    },
+    yAxis: {
+      title: {
+        text: 'Weight (lbs)'
+      }
+    },
+    plotOptions: {
+      column: {
+        borderWidth: 0,
+        groupPadding: 0.1,
+        pointPadding: 0.3
+      }
+    },
+    series: dataSeries
+  });
+</script>
+
+
+
+<script>
+  const weightData = [<% petWeights.forEach(data => { %><%= data.weight %>, <% }) %>];
+
+  // Calculate the frequency of each weight range
+  const weightRangeCounts = {};
+  weightData.forEach(weight => {
+    const range = Math.floor(weight / 10) * 10 + 1;
+    weightRangeCounts[range] = (weightRangeCounts[range] || 0) + 1;
+  });
+
+  // Prepare the data for the histogram
+  const histogramData = Object.entries(weightRangeCounts).map(([range, count]) => ({
+    range: `${range}-${range + 9}`,
+    count
+  }));
+
+  // Create the histogram
+  Highcharts.chart('container7', {
+    chart: {
+      type: 'column'
+    },
+    title: {
+      text: 'Frequency of Pet Weight'
+    },
+    xAxis: {
+      title: {
+        text: 'Weight Range (lbs)'
+      },
+      categories: histogramData.map(data => data.range)
+    },
+    yAxis: {
+      title: {
+        text: 'Frequency'
+      }
+    },
+    series: [{
+      name: 'Frequency',
+      data: histogramData.map(data => data.count),
+      showInLegend: false
+    }]
+  });
+</script>
+
+
+
+<script>
+  const breeds = [
+    <% breeds.forEach(breed => { %>
+      '<%= breed.breed %>',
+    <% }) %>
+  ];
+
+  const petData = [
+    <% petss.forEach(pet => { %>
+      {
+        breed: '<%= pet.breed %>',
+        createdAt: new Date('<%= pet.createdAt.toISOString() %>').getTime()
+      },
+    <% }) %>
+  ];
+
+  const seriesData = breeds.map(breed => ({
+    name: breed,
+    data: petData
+      .filter(pet => pet.breed === breed)
+      .map(pet => [pet.createdAt, 1])
+      .sort((a, b) => a[0] - b[0])
+      .reduce((acc, [date, value]) => {
+        const previousValue = acc.length > 0 ? acc[acc.length - 1][1] : 0;
+        const cumulativeValue = previousValue + value;
+        acc.push([date, cumulativeValue]);
+        return acc;
+      }, [])
+  }));
+
+  Highcharts.chart('container8', {
+    chart: {
+      type: 'area'
+    },
+    title: {
+      text: 'Cumulative Service Utilization over Time by Breed'
+    },
+    xAxis: {
+      type: 'datetime',
+      title: {
+        text: 'Created At (Time)'
+      }
+    },
+    yAxis: {
+      title: {
+        text: 'Cumulative Service Utilization'
+      }
+    },
+    plotOptions: {
+      area: {
+        stacking: 'normal'
+      }
+    },
+    series: seriesData
+  });
+</script>
+ 
+
+<script>
+  Highcharts.chart('container9', {
+    chart: {
+      type: 'pie'
+    },
+    title: {
+      text: 'Services Distribution'
+    },
+    tooltip: {
+      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+        }
+      }
+    },
+    series: [{
+      name: 'Services',
+      colorByPoint: true,
+      data: [
+        <% servicesDistribution.forEach(service => { %>
+          { name: '<%= service.service %>', y: <%= service._count.service %> },
+        <% }) %>
+      ]
+    }]
+  });
+</script>
+
+
+
+<script>
+  const chartData = <%- JSON.stringify(chartData) %>;
+
+  Highcharts.chart('container10', {
+    chart: {
+      type: 'networkgraph',
+      plotBorderWidth: 1
+    },
+    title: {
+      text: 'Flow of Services by Gender'
+    },
+    plotOptions: {
+      networkgraph: {
+        keys: ['from', 'to'],
+        layoutAlgorithm: {
+          enableSimulation: true,
+          integration: 'verlet',
+          linkLength: 100
+        }
+      }
+    },
+    series: [{
+      dataLabels: {
+        enabled: true,
+        linkFormat: ''
+      },
+      data: chartData
+    }]
+  });
+</script>
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+
+<!-- OTHER VERSION OF FONT AWESOME -->
   <script src="https://kit.fontawesome.com/4c56e4603b.js" crossorigin="anonymous"></script>
   <!-- BOOTSTRAP JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script> 
